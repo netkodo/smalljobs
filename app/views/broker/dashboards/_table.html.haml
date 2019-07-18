@@ -1,3 +1,14 @@
+- if (current_broker.present? || current_provider.present?)
+  .vacation-bar.js-organization{data: {id: current_broker.selected_organization_id, name: "Alle Organisationen"}, style: "display: none"}
+    Die
+    %span.js-organisation-name
+      Alle Organisationen
+    Organisation hat Feiertage von
+    %span.js-org-start-date
+      test
+    bis
+    %span.js-org-end-date
+      test2
 %div{id: 'dashboard'}
   %div.row
     %div.col-sm-3
@@ -340,235 +351,237 @@
                   = assignment.feedback
 
 :javascript
-  var target = window.location.hash;
-  var params = window.location.search.substr(1);
-  if(params === undefined || params === null || params === '') {
-    params = '';
-  } else {
-    params = '?' + params;
-  }
-
-  target = target.replace('#', '');
-  if(target === '') {
-    target = 'todo';
-  }
-  // window.location.hash = '';
-
-  $(document).ready(function(){
-
-    $('.nav-pills a[href="#' + target + '"]').tab('show');
-    setHelp();
-
-    var selectedOrganizationId = 0;
-    var finishedVisible = false;
-
-    if(params.includes('archive=true')) {
-      $('.archive-btn').addClass('archive-btn-selected');
+  $(document).ready(function() {
+    var target = window.location.hash;
+    var params = window.location.search.substr(1);
+    if(params === undefined || params === null || params === '') {
+      params = '';
+    } else {
+      params = '?' + params;
     }
 
-    $('.archive-btn').click(function(){
-      if(params.includes('archive=true')) {
-        var newLocation = window.location.href.split('#')[0].replace('?archive=true', '') + '#' + target;
-        window.location.href = newLocation;
-      } else {
-        if(window.location.href.includes('?')) {
-          var newLocation = window.location.href.split('#')[0] + 'archive=true' + '#' + target;
-        } else {
-          var newLocation = window.location.href.split('#')[0] + '?archive=true' + '#' + target;
-        }
-
-        window.location.href = newLocation;
-      }
-    });
-
-    var tableSorted = [false, false, false, false, false];
-
-    function loadSortedColumn() {
-      var hash = target;
-      var sortedColumnId = sessionStorage.getItem('sortedColumn' + hash);
-      if(sortedColumnId != undefined) {
-        sorttable.init();
-        sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
-        if(sessionStorage.getItem('sortedReverse' + hash) === 'true') {
-          sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
-        }
-      } else {
-        sorttable.init();
-        if(hash === "todo" && !tableSorted[0]) {
-          tableSorted[0] = true;
-          sorttable.innerSortFunction.apply(document.getElementById('todo_date'), []);
-          sorttable.innerSortFunction.apply(document.getElementById('todo_date'), []);
-        }
-        if(hash === "jobs" && !tableSorted[1]) {
-          tableSorted[1] = true;
-          sorttable.innerSortFunction.apply(document.getElementById('job_date'), []);
-          sorttable.innerSortFunction.apply(document.getElementById('job_date'), []);
-        }
-        if(hash === "providers" && !tableSorted[2]) {
-          tableSorted[2] = true;
-          sorttable.innerSortFunction.apply(document.getElementById('provider_date'), []);
-          sorttable.innerSortFunction.apply(document.getElementById('provider_date'), []);
-        }
-        if(hash === "seekers" && !tableSorted[3]) {
-          tableSorted[3] = true;
-          sorttable.innerSortFunction.apply(document.getElementById('seeker_date'), []);
-          sorttable.innerSortFunction.apply(document.getElementById('seeker_date'), []);
-        }
-        if(hash === "assignments" && !tableSorted[4]) {
-          tableSorted[4] = true;
-          sorttable.innerSortFunction.apply(document.getElementById('assignment_date'), []);
-          sorttable.innerSortFunction.apply(document.getElementById('assignment_date'), []);
-        }
-      }
+    target = target.replace('#', '');
+    if(target === '') {
+      target = 'todo';
     }
+    // window.location.hash = '';
 
-    $('th.sortable').click(function() {
-      var hash = target;
-      sessionStorage.setItem('sortedColumn' + hash, $(this).attr('id'));
-      if($(this).hasClass('sorttable_sorted')) {
-        sessionStorage.setItem('sortedReverse' + hash, 'true');
-      } else {
-        sessionStorage.setItem('sortedReverse' + hash, 'false');
-      }
-    });
+    $(document).ready(function(){
 
-    function checkSearchField() {
-      var searchString = window.localStorage.getItem("search_filter");
-      if(searchString === null || searchString === 'null') {
-        searchString = "#{current_broker.filter.nil? ? '' : current_broker.filter}";
-      }
-
-      window.localStorage.setItem("search_filter", null);
-
-      $('.search-field').val(searchString);
-
-      if(searchString !== "") {
-        $('.delete-icon').removeClass('display-none');
-      }
-
-      jobsList.search(searchString);
-      providersList.search(searchString);
-      seekersList.search(searchString);
-      assignmentsList.search(searchString);
-      todosCurrentList.search(searchString);
-      todosPostponedList.search(searchString);
-    }
-
-    function loadOrganization() {
-      var id = "#{current_broker.selected_organization_id}";
-      selectedOrganizationId = id;
-      if(id === '0') {
-        $('.display-none.organization').removeClass('display-none');
-      } else {
-        $('.display-none.organization').removeClass('display-none');
-        $('.organization').addClass('display-none');
-        $('.organization-' + id).removeClass('display-none');
-      }
-
-      $('#dropdown-btn').val(id);
-      // $('#dropdown-btn').text($('.organization-dropdown[data-value="' + id + '"]').text());
-    }
-
-    $('.nav-pills a').on('shown.bs.tab', function (e) {
-      var history_array = JSON.parse(sessionStorage.getItem('history') || '[]')
-      history_array.push(window.location.href.split('#')[0] + e.target.hash );
-      sessionStorage.setItem('history', JSON.stringify(history_array))
-
-      sessionStorage.setItem('previous', window.location.href);
-      if(history.pushState) {
-        history.pushState(null, null, params + e.target.hash);
-      }
-      else {
-        location.hash = e.target.hash;
-      }
-
-
-      target = e.target.hash.replace('#', '');
-      loadSortedColumn();
+      $('.nav-pills a[href="#' + target + '"]').tab('show');
       setHelp();
-    });
 
-    $('#dropdown-btn').on('change', function(){
-      var id = this.value;
-      var name = $(this).find("option:selected").text();
-      var vacationStart = $(this).find("option:selected").data('vacation-start');
-      var vacationEnd = $(this).find("option:selected").data('vacation-end');
-      var showDate = $(this).find("option:selected").data('show-date');
-      selectedOrganizationId = id;
-      if(id === '0') {
-        $('.display-none.organization').removeClass('display-none');
-      } else {
-        $('.display-none.organization').removeClass('display-none');
-        $('.organization').addClass('display-none');
-        $('.organization-' + id).removeClass('display-none');
+      var selectedOrganizationId = 0;
+      var finishedVisible = false;
+
+      if(params.includes('archive=true')) {
+        $('.archive-btn').addClass('archive-btn-selected');
       }
-      if(vacationStart!=undefined && showDate){
-        $('.js-organisation-name').text(name)
-        $('.js-org-start-date').text(vacationStart)
-        $('.js-org-end-date').text(vacationEnd)
-        $('.js-organization').show()
-      }else{
-        $('.js-organization').hide()
+
+      $('.archive-btn').click(function(){
+        if(params.includes('archive=true')) {
+          var newLocation = window.location.href.split('#')[0].replace('?archive=true', '') + '#' + target;
+          window.location.href = newLocation;
+        } else {
+          if(window.location.href.includes('?')) {
+            var newLocation = window.location.href.split('#')[0] + 'archive=true' + '#' + target;
+          } else {
+            var newLocation = window.location.href.split('#')[0] + '?archive=true' + '#' + target;
+          }
+
+          window.location.href = newLocation;
+        }
+      });
+
+      var tableSorted = [false, false, false, false, false];
+
+      function loadSortedColumn() {
+        var hash = target;
+        var sortedColumnId = sessionStorage.getItem('sortedColumn' + hash);
+        if(sortedColumnId != undefined) {
+          sorttable.init();
+          sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
+          if(sessionStorage.getItem('sortedReverse' + hash) === 'true') {
+            sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
+          }
+        } else {
+          sorttable.init();
+          if(hash === "todo" && !tableSorted[0]) {
+            tableSorted[0] = true;
+            sorttable.innerSortFunction.apply(document.getElementById('todo_date'), []);
+            sorttable.innerSortFunction.apply(document.getElementById('todo_date'), []);
+          }
+          if(hash === "jobs" && !tableSorted[1]) {
+            tableSorted[1] = true;
+            sorttable.innerSortFunction.apply(document.getElementById('job_date'), []);
+            sorttable.innerSortFunction.apply(document.getElementById('job_date'), []);
+          }
+          if(hash === "providers" && !tableSorted[2]) {
+            tableSorted[2] = true;
+            sorttable.innerSortFunction.apply(document.getElementById('provider_date'), []);
+            sorttable.innerSortFunction.apply(document.getElementById('provider_date'), []);
+          }
+          if(hash === "seekers" && !tableSorted[3]) {
+            tableSorted[3] = true;
+            sorttable.innerSortFunction.apply(document.getElementById('seeker_date'), []);
+            sorttable.innerSortFunction.apply(document.getElementById('seeker_date'), []);
+          }
+          if(hash === "assignments" && !tableSorted[4]) {
+            tableSorted[4] = true;
+            sorttable.innerSortFunction.apply(document.getElementById('assignment_date'), []);
+            sorttable.innerSortFunction.apply(document.getElementById('assignment_date'), []);
+          }
+        }
       }
-    });
 
-    var options = {
-      valueNames: [ 'name', 'provider-name', 'place', 'status',
-      'street', 'title', 'date', 'allocations', 'jobs', 'status', 'payment',
-      'feedback', 'description', 'salary', 'manpower', 'duration',
-      'long_description', 'short_description', 'phone',
-      'mobile', 'contact_preference', 'contact_availability', 'company',
-      'email', 'sex', 'additional_contacts', 'occupation', 'languages' ]
-    };
+      $('th.sortable').click(function() {
+        var hash = target;
+        sessionStorage.setItem('sortedColumn' + hash, $(this).attr('id'));
+        if($(this).hasClass('sorttable_sorted')) {
+          sessionStorage.setItem('sortedReverse' + hash, 'true');
+        } else {
+          sessionStorage.setItem('sortedReverse' + hash, 'false');
+        }
+      });
 
-    var jobsList = new List('jobs', options);
-    var providersList = new List('providers', options);
-    var seekersList = new List('seekers', options);
-    var assignmentsList = new List('assignments', options);
-    var todosCurrentList = new List('todo_current', options);
-    var todosPostponedList = new List('todo_postponed', options);
+      function checkSearchField() {
+        var searchString = window.localStorage.getItem("search_filter");
+        if(searchString === null || searchString === 'null') {
+          searchString = "#{current_broker.filter.nil? ? '' : current_broker.filter}";
+        }
 
-    $('.search-field').on('keyup', function() {
-      var searchString = $(this).val();
-      if(searchString !== "") {
-        $('.delete-icon').removeClass('display-none');
-      } else {
+        window.localStorage.setItem("search_filter", null);
+
+        $('.search-field').val(searchString);
+
+        if(searchString !== "") {
+          $('.delete-icon').removeClass('display-none');
+        }
+
+        jobsList.search(searchString);
+        providersList.search(searchString);
+        seekersList.search(searchString);
+        assignmentsList.search(searchString);
+        todosCurrentList.search(searchString);
+        todosPostponedList.search(searchString);
+      }
+
+      function loadOrganization() {
+        var id = "#{current_broker.selected_organization_id}";
+        selectedOrganizationId = id;
+        if(id === '0') {
+          $('.display-none.organization').removeClass('display-none');
+        } else {
+          $('.display-none.organization').removeClass('display-none');
+          $('.organization').addClass('display-none');
+          $('.organization-' + id).removeClass('display-none');
+        }
+
+        $('#dropdown-btn').val(id);
+        // $('#dropdown-btn').text($('.organization-dropdown[data-value="' + id + '"]').text());
+      }
+
+      $('.nav-pills a').on('shown.bs.tab', function (e) {
+        var history_array = JSON.parse(sessionStorage.getItem('history') || '[]')
+        history_array.push(window.location.href.split('#')[0] + e.target.hash );
+        sessionStorage.setItem('history', JSON.stringify(history_array))
+
+        sessionStorage.setItem('previous', window.location.href);
+        if(history.pushState) {
+          history.pushState(null, null, params + e.target.hash);
+        }
+        else {
+          location.hash = e.target.hash;
+        }
+
+
+        target = e.target.hash.replace('#', '');
+        loadSortedColumn();
+        setHelp();
+      });
+
+      $('#dropdown-btn').on('change', function(){
+        var id = this.value;
+        var name = $(this).find("option:selected").text();
+        var vacationStart = $(this).find("option:selected").data('vacation-start');
+        var vacationEnd = $(this).find("option:selected").data('vacation-end');
+        var showDate = $(this).find("option:selected").data('show-date');
+        selectedOrganizationId = id;
+        if(id === '0') {
+          $('.display-none.organization').removeClass('display-none');
+        } else {
+          $('.display-none.organization').removeClass('display-none');
+          $('.organization').addClass('display-none');
+          $('.organization-' + id).removeClass('display-none');
+        }
+        if(vacationStart!=undefined && showDate){
+          $('.js-organisation-name').text(name)
+          $('.js-org-start-date').text(vacationStart)
+          $('.js-org-end-date').text(vacationEnd)
+          $('.js-organization').show()
+        }else{
+          $('.js-organization').hide()
+        }
+      });
+
+      var options = {
+        valueNames: [ 'name', 'provider-name', 'place', 'status',
+        'street', 'title', 'date', 'allocations', 'jobs', 'status', 'payment',
+        'feedback', 'description', 'salary', 'manpower', 'duration',
+        'long_description', 'short_description', 'phone',
+        'mobile', 'contact_preference', 'contact_availability', 'company',
+        'email', 'sex', 'additional_contacts', 'occupation', 'languages' ]
+      };
+
+      var jobsList = new List('jobs', options);
+      var providersList = new List('providers', options);
+      var seekersList = new List('seekers', options);
+      var assignmentsList = new List('assignments', options);
+      var todosCurrentList = new List('todo_current', options);
+      var todosPostponedList = new List('todo_postponed', options);
+
+      $('.search-field').on('keyup', function() {
+        var searchString = $(this).val();
+        if(searchString !== "") {
+          $('.delete-icon').removeClass('display-none');
+        } else {
+          $('.delete-icon').addClass('display-none');
+        }
+        $('.search-field').val(searchString);
+
+        jobsList.search(searchString);
+        providersList.search(searchString);
+        seekersList.search(searchString);
+        assignmentsList.search(searchString);
+        todosCurrentList.search(searchString);
+        todosPostponedList.search(searchString);
+      });
+
+      $('.delete-icon').click(function(){
+        $('.search-field').val("");
         $('.delete-icon').addClass('display-none');
-      }
-      $('.search-field').val(searchString);
+        var searchString = "";
+        jobsList.search(searchString);
+        providersList.search(searchString);
+        seekersList.search(searchString);
+        assignmentsList.search(searchString);
+        todosCurrentList.search(searchString);
+        todosPostponedList.search(searchString);
+      });
 
-      jobsList.search(searchString);
-      providersList.search(searchString);
-      seekersList.search(searchString);
-      assignmentsList.search(searchString);
-      todosCurrentList.search(searchString);
-      todosPostponedList.search(searchString);
-    });
+      checkSearchField();
+      loadOrganization();
+      loadSortedColumn();
 
-    $('.delete-icon').click(function(){
-      $('.search-field').val("");
-      $('.delete-icon').addClass('display-none');
-      var searchString = "";
-      jobsList.search(searchString);
-      providersList.search(searchString);
-      seekersList.search(searchString);
-      assignmentsList.search(searchString);
-      todosCurrentList.search(searchString);
-      todosPostponedList.search(searchString);
-    });
-
-    checkSearchField();
-    loadOrganization();
-    loadSortedColumn();
-
-    window.addEventListener("beforeunload", function (event) {
-      // $(window).scrollTop(0);
-      var searchFieldVal = $('.search-field').val();
-      if(searchFieldVal === null) {
-        searchFieldVal = '';
-      }
-      window.localStorage.setItem("search_filter", searchFieldVal);
-        $.post("#{save_settings_broker_dashboard_path}", {filter: searchFieldVal, selected_organization_id: parseInt(selectedOrganizationId)}, function(response) {
+      window.addEventListener("beforeunload", function (event) {
+        // $(window).scrollTop(0);
+        var searchFieldVal = $('.search-field').val();
+        if(searchFieldVal === null) {
+          searchFieldVal = '';
+        }
+        window.localStorage.setItem("search_filter", searchFieldVal);
+          $.post("#{save_settings_broker_dashboard_path}", {filter: searchFieldVal, selected_organization_id: parseInt(selectedOrganizationId)}, function(response) {
+        });
       });
     });
   });

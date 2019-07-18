@@ -66,6 +66,7 @@ Smalljobs::Application.routes.draw do
     namespace :broker do
       resources :users, only: [:edit, :update, :create, :destroy], controller: :brokers
       resource :dashboard, only: :show do
+         get 'show_table'
         member do
           post 'save_settings'
         end

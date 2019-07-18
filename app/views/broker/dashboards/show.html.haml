@@ -1,12 +1,28 @@
-- if (current_broker.present? || current_provider.present?)
-  .vacation-bar.js-organization{data: {id: current_broker.selected_organization_id, name: "Alle Organisationen"}, style: "display: none"}
-    Die
-    %span.js-organisation-name
-      Alle Organisationen
-    Organisation hat Feiertage von
-    %span.js-org-start-date
-      test
-    bis
-    %span.js-org-end-date
-      test2
-= render partial: "table"
+%div
+  #loader.loader
+%div#table
+
+
+:javascript
+
+   function removeLoader(){
+    $( "#loader" ).fadeOut(500, function() {
+      $( "#loader" ).remove();
+    });
+  }
+
+  $(window).load(function(){
+    $.ajax({
+          url: '/broker/dashboard/show_table',
+          type: 'GET',
+          cache: false,
+          dataType: 'html',
+          success: function(response) {
+            setTimeout(removeLoader)
+            $('#table').html(response)
+          }
+      });
+  });
+
+
+
