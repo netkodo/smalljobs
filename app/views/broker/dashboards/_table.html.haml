@@ -365,7 +365,7 @@
     }
     // window.location.hash = '';
 
-    $(document).ready(function(){
+    // $(document).ready(function(){
 
       $('.nav-pills a[href="#' + target + '"]').tab('show');
       setHelp();
@@ -394,17 +394,23 @@
 
       var tableSorted = [false, false, false, false, false];
 
+      tables = document.getElementsByTagName('table')
+       for(var i=0 ; i < tables.length ; i++){
+         if (tables[i].className.search(/\bsortable\b/) != -1) {
+           sorttable.makeSortable(tables[i]);
+         }
+       }
+
       function loadSortedColumn() {
         var hash = target;
         var sortedColumnId = sessionStorage.getItem('sortedColumn' + hash);
+        sorttable.init();
         if(sortedColumnId != undefined) {
-          sorttable.init();
           sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
           if(sessionStorage.getItem('sortedReverse' + hash) === 'true') {
             sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
           }
         } else {
-          sorttable.init();
           if(hash === "todo" && !tableSorted[0]) {
             tableSorted[0] = true;
             sorttable.innerSortFunction.apply(document.getElementById('todo_date'), []);
@@ -434,7 +440,6 @@
       }
 
       $('th.sortable').click(function() {
-        console.log("--------------------");
         var hash = target;
         sessionStorage.setItem('sortedColumn' + hash, $(this).attr('id'));
         if($(this).hasClass('sorttable_sorted')) {
@@ -583,5 +588,3 @@
           $.post("#{save_settings_broker_dashboard_path}", {filter: searchFieldVal, selected_organization_id: parseInt(selectedOrganizationId)}, function(response) {
         });
       });
-    });
-  });

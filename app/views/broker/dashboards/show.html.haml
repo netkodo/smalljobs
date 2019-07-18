@@ -15,10 +15,9 @@
     $.ajax({
           url: '/broker/dashboard/show_table',
           type: 'GET',
-          cache: false,
           dataType: 'html',
           success: function(response) {
-            setTimeout(removeLoader)
+            removeLoader()
             $('#table').html(response)
           }
       });
