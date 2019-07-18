@@ -351,7 +351,6 @@
                   = assignment.feedback
 
 :javascript
-  $(document).ready(function() {
     var target = window.location.hash;
     var params = window.location.search.substr(1);
     if(params === undefined || params === null || params === '') {
@@ -435,6 +434,7 @@
       }
 
       $('th.sortable').click(function() {
+        console.log("--------------------");
         var hash = target;
         sessionStorage.setItem('sortedColumn' + hash, $(this).attr('id'));
         if($(this).hasClass('sorttable_sorted')) {
