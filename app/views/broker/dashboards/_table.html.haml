@@ -350,7 +350,16 @@
                 %td.feedback
                   = assignment.feedback
 
+%div#infinite-scrolling
+  = will_paginate @todos, renderer: BootstrapPagination::Rails
+
 :javascript
+
+   $(function(){
+     $('.pagination tr').attr('data-remote', 'true')
+   });
+
+
     var target = window.location.hash;
     var params = window.location.search.substr(1);
     if(params === undefined || params === null || params === '') {

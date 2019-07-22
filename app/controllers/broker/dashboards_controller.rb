@@ -59,6 +59,8 @@ class Broker::DashboardsController < ApplicationController
                         @seekers.pluck(:id), @providers.pluck(:id), @jobs.pluck(:id), allocations.pluck(:id))
                  .reverse_order()
 
+    @todos = @todos.paginate(page: params[:page], per_page: 15)
+
     respond_to do |format|
       format.html { render layout: false }
     end
