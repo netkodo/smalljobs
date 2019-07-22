@@ -87,7 +87,7 @@
                 %tr
                   %td{colspan: 3}= "Es sind noch keine Todo in deiner Region erfasst"
               - @todos.current.each do |todo|
-                %tr{ class: "organization organization-#{todo.organization_id}" }
+                %tr#todos{ class: "organization organization-#{todo.organization_id}" }
                   - sortable_date = todo.created_at.strftime("%Y%m%d%H%M%S")
                   %td.date{sorttable_customkey: sortable_date}
                     = todo.created_at.strftime("%d.%m.%Y")
@@ -125,7 +125,7 @@
                 %tr
                   %td{colspan: 3}= "Es sind noch keine Todo in deiner Region erfasst"
               - @todos.postponed.each do |todo|
-                %tr{ class: "organization organization-#{todo.organization_id}" }
+                %tr#todos{ class: "organization organization-#{todo.organization_id}" }
                   - sortable_date = todo.created_at.strftime("%Y%m%d%H%M%S")
                   %td.date{sorttable_customkey: sortable_date}
                     = todo.created_at.strftime("%d.%m.%Y")
@@ -354,6 +354,15 @@
   = will_paginate @todos, renderer: BootstrapPagination::Rails
 
 :javascript
+
+   $('#todos').append('<%= j render @todos %>');
+
+    <% if @posts.next_page %>
+      $('.pagination').replaceWith('<%= j will_paginate @posts %>');
+    <% else %>
+      $(window).off('scroll');
+      $('.pagination').remove();
+    <% end %>
 
    $(function(){
      $('.pagination tr').attr('data-remote', 'true')
