@@ -59,11 +59,11 @@ class Broker::DashboardsController < ApplicationController
                         @seekers.pluck(:id), @providers.pluck(:id), @jobs.pluck(:id), allocations.pluck(:id))
                  .reverse_order()
 
-    @todos = @todos.paginate(page: params[:page], per_page: 10)
-    @seekers = @seekers.paginate(page: params[:page], per_page: 10)
-    @providers = @providers.paginate(page: params[:page], per_page: 10)
-    @jobs = @jobs.paginate(page: params[:page], per_page: 10)
-    @assignments = @assignments.paginate(page: params[:page], per_page: 10)
+    @todos = @todos.paginate(page: params[:page], per_page: 15)
+    @seekers = @seekers.paginate(page: params[:page], per_page: 15)
+    @providers = @providers.paginate(page: params[:page], per_page: 15)
+    @jobs = @jobs.paginate(page: params[:page], per_page: 15)
+    @assignments = @assignments.paginate(page: params[:page], per_page: 15)
 
     respond_to do |format|
       format.html { render layout: false }

@@ -12,13 +12,12 @@
   }
 
   function infiniteScroll(){
-
     if ($('#infinite-scrolling').size() > 0) {
       $(window).on('scroll', function() {
         var url;
         url = $('.pagination .next a').attr('href');
-        if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 60) {
-          $('.pagination').html('<img src="/assets/ajax-loader.gif" alt="Loading..." title="Loading..." />');
+        if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 30) {
+          $('.pagination').text('Loading....');
           $.getScript(url);
         }
       });
@@ -37,6 +36,4 @@
           }
       });
   });
-
-
 
