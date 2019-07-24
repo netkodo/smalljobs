@@ -37,14 +37,3 @@
     transform: rotate(360deg);
   }
 }
-//
-//$(window).load(function(){
-//setTimeout(removeLoader, 500); //wait for page load PLUS 500ms
-//});
-//
-//function removeLoader(){
-//  $( "#loader" ).fadeOut(500, function() {
-//// fadeOut complete. Remove the loading div
-//  $( "#loader" ).remove(); //makes page more lightweight
-//});
-//}

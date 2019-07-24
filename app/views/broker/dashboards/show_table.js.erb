@@ -1,6 +1,7 @@
-$('#todos').append('<%= j render @todos %>');
+$('#todos_body').append('<%= j render @todos %>');
 <% if @todos.next_page %>
-  $('.pagination').replaceWith('<%= j will_paginate @posts %>');
+  $('.pagination').replaceWith('<%= j will_paginate @todos, renderer: BootstrapPagination::Rails %>');
+//  $('#infinite-scrolling').append('<div id="loader" class="loader"></div>');
 <% else %>
   $(window).off('scroll');
   $('.pagination').remove();

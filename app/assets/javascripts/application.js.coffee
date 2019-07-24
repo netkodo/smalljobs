@@ -16,7 +16,6 @@
 #= require shared.js
 #= require jquery.form.min.js
 #= require html2canvas.min.js
-#= require pagination.js.coffee
 
 ready = ->
   history_array = JSON.parse(sessionStorage.getItem('history') || '[]')

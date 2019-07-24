@@ -11,6 +11,20 @@
     });
   }
 
+  function infiniteScroll(){
+
+    if ($('#infinite-scrolling').size() > 0) {
+      $(window).on('scroll', function() {
+        var url;
+        url = $('.pagination .next a').attr('href');
+        if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 60) {
+          $('.pagination').html('<img src="/assets/ajax-loader.gif" alt="Loading..." title="Loading..." />');
+          $.getScript(url);
+        }
+      });
+    }
+  }
+
   $(window).load(function(){
     $.ajax({
           url: '/broker/dashboard/show_table',
@@ -19,6 +33,7 @@
           success: function(response) {
             removeLoader()
             $('#table').html(response)
+            infiniteScroll()
           }
       });
   });
