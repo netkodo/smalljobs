@@ -15,11 +15,18 @@
     if ($('#infinite-scrolling').size() > 0) {
       $(window).on('scroll', function() {
         var url;
-        url = $('.pagination .next a').attr('href');
-        if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 30) {
-          $('.pagination').text('Loading....');
-          $.getScript(url);
+        var page_number = $('.js-active-tab > .active > a').data('page') + 1
+        console.log(page_number)
+        var table_name = $('.js-active-tab > .active > a').attr('href').substr(1)
+        url = $('.pagination .next a').attr('href')
+        if (url != undefined) {
+          url = url+"&table="+table_name+"&"+table_name+"_page="+page_number;
+          if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 60) {
+            $('.pagination').text('Loading...');
+            $.getScript(url);
+         }
         }
+
       });
     }
   }

@@ -44,19 +44,19 @@
 
   %ul.nav.nav-pills.js-active-tab
     %li.active
-      %a{'data-toggle': 'tab', href: '#todos'}
+      %a{'data-toggle': 'tab', href: '#todos', 'data-page': 1}
         =t('broker_dashboard.todo')
     %li
-      %a{'data-toggle': 'tab', href: '#jobs'}
+      %a{'data-toggle': 'tab', href: '#jobs', 'data-page': 1}
         =t('broker_dashboard.jobs')
     %li
-      %a{'data-toggle': 'tab', href: '#providers'}
+      %a{'data-toggle': 'tab', href: '#providers', 'data-page': 1}
         =t('broker_dashboard.providers')
     %li
-      %a{'data-toggle': 'tab', href: '#seekers'}
+      %a{'data-toggle': 'tab', href: '#seekers', 'data-page': 1}
         =t('broker_dashboard.seekers')
     %li
-      %a{'data-toggle': 'tab', href: '#assignments'}
+      %a{'data-toggle': 'tab', href: '#assignments', 'data-page': 1}
         =t('broker_dashboard.assignments')
   %div.tab-content
     %div{id: 'todos', class: 'tab-pane fade in active'}
@@ -256,9 +256,9 @@
     if(target === '') {
       target = 'todo';
     }
-    // window.location.hash = '';
+    window.location.hash = '';
 
-    // $(document).ready(function(){
+    $(document).ready(function(){
 
       $('.nav-pills a[href="#' + target + '"]').tab('show');
       setHelp();
@@ -481,3 +481,4 @@
           $.post("#{save_settings_broker_dashboard_path}", {filter: searchFieldVal, selected_organization_id: parseInt(selectedOrganizationId)}, function(response) {
         });
       });
+    });

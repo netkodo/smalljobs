@@ -1,39 +1,29 @@
-if ( $(location).attr('hash') == "#todos" ||  $(location).attr('hash') == "" || $(location).attr('hash') == "#todo_current" || $(location).attr('hash') == "#todo_postponed") {
-    console.log("#todos")
-        $('#todos_body').append('<%= j render @todos %>');
-    <% if @todos.next_page %>
-        $('.pagination').replaceWith('<%= j will_paginate @todos, renderer: BootstrapPagination::Rails %>');
-    <% end %>
+next_page = $('.js-active-tab > .active > a').data('page') + 1
 
+
+if ( $(location).attr('hash') == "#todos" ||  $(location).attr('hash') == "" || $(location).attr('hash') == "#todo_current" || $(location).attr('hash') == "#todo_postponed") {
+        $('#todos_body').append('<%= j render @todos %>');
+        $('.pagination').replaceWith('<%= j will_paginate @todos, renderer: BootstrapPagination::Rails %>');
+        $('.js-active-tab > .active > a').data('page', next_page)
 
 } else if ( $(location).attr('hash') == "#jobs" )  {
-    console.log("#jobs")
         $('#jobs_body').append('<%= j render @jobs %>');
-    <% if @jobs.next_page %>
         $('.pagination').replaceWith('<%= j will_paginate @jobs, renderer: BootstrapPagination::Rails %>');
-    <% end %>
-
+        $('.js-active-tab > .active > a').data('page', next_page)
 
 } else if ( $(location).attr('hash') == "#providers" ) {
-    console.log("#providers")
         $('#providers_body').append('<%= j render @providers %>');
-    <% if @providers.next_page %>
         $('.pagination').replaceWith('<%= j will_paginate @providers, renderer: BootstrapPagination::Rails %>');
-    <% end %>
+        $('.js-active-tab > .active > a').data('page', next_page)
 
 
 } else if ( $(location).attr('hash') == "#seekers" ) {
-    console.log("#seekers")
         $('#seekers_body').append('<%= j render @seekers %>');
-    <% if @seekers.next_page %>
         $('.pagination').replaceWith('<%= j will_paginate @seekers, renderer: BootstrapPagination::Rails %>');
-    <% end %>
-
+        $('.js-active-tab > .active > a').data('page', next_page)
 
 } else if ( $(location).attr('hash') == "#assignments" ) {
-    console.log("#assignments")
         $('#assignments_body').append('<%= j render @assignments %>');
-    <% if @assignments.next_page %>
         $('.pagination').replaceWith('<%= j will_paginate @assignments, renderer: BootstrapPagination::Rails %>');
-    <% end %>
+        $('.js-active-tab > .active > a').data('page', next_page)
 }
