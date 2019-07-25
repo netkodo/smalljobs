@@ -82,7 +82,7 @@
                 %th.sortable{id: 'todo_todo'}= t('broker_dashboard.todo_table.todo')
                 %th= t('broker_dashboard.todo_table.description')
                 %th.pull-right= t('broker_dashboard.todo_table.postpone')
-            %tbody.list{id: 'todos_body'}
+            %tbody.list{id:"todos_body"}
               - if @todos.current.size == 0
                 %tr
                   %td{colspan: 3}= "Es sind noch keine Todo in deiner Region erfasst"
@@ -103,7 +103,7 @@
                 %tr
                   %td{colspan: 3}= "Es sind noch keine Todo in deiner Region erfasst"
               - @todos.postponed.each do |todo|
-                %tr#todos{ class: "organization organization-#{todo.organization_id}" }
+                %tr{ class: "organization organization-#{todo.organization_id}" }
                   - sortable_date = todo.created_at.strftime("%Y%m%d%H%M%S")
                   %td.date{sorttable_customkey: sortable_date}
                     = todo.created_at.strftime("%d.%m.%Y")
@@ -256,7 +256,7 @@
     if(target === '') {
       target = 'todo';
     }
-    window.location.hash = '';
+    // window.location.hash = '';
 
     $(document).ready(function(){
 
@@ -297,13 +297,14 @@
       function loadSortedColumn() {
         var hash = target;
         var sortedColumnId = sessionStorage.getItem('sortedColumn' + hash);
-        sorttable.init();
         if(sortedColumnId != undefined) {
+          sorttable.init();
           sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
           if(sessionStorage.getItem('sortedReverse' + hash) === 'true') {
             sorttable.innerSortFunction.apply(document.getElementById(sortedColumnId), []);
           }
         } else {
+          sorttable.init();
           if(hash === "todo" && !tableSorted[0]) {
             tableSorted[0] = true;
             sorttable.innerSortFunction.apply(document.getElementById('todo_date'), []);
